@@ -50,10 +50,10 @@ extern "C"
  *----------------------------------------------------------------------------*/
 
 // Number of pins defined in PinDescription array
-#define PINS_COUNT           (26u)
+#define PINS_COUNT           (47u)
 #define NUM_DIGITAL_PINS     (14u)
 #define NUM_ANALOG_INPUTS    (6u)
-#define NUM_ANALOG_OUTPUTS   (1u)
+#define NUM_ANALOG_OUTPUTS   (0u)
 
 #define digitalPinToPort(P)        ( &(PORT->Group[g_APinDescription[P].ulPort]) )
 #define digitalPinToBitMask(P)     ( 1 << g_APinDescription[P].ulPin )
@@ -77,8 +77,8 @@ extern "C"
 
 // LEDs
 #define PIN_LED_13           (13u)
-#define PIN_LED_RXL          (25u)
-#define PIN_LED_TXL          (26u)
+#define PIN_LED_RXL          (47u)
+#define PIN_LED_TXL          (47u)
 #define PIN_LED              PIN_LED_13
 #define PIN_LED2             PIN_LED_RXL
 #define PIN_LED3             PIN_LED_TXL
@@ -102,38 +102,62 @@ static const uint8_t A4  = PIN_A4 ;
 static const uint8_t A5  = PIN_A5 ;
 #define ADC_RESOLUTION		12
 
+// Gemalto pins
+#define CELL_DTR			(22ul)
+#define CELL_DSR			(23ul)
+#define CELL_DCD			(24ul)
+#define CELL_IGT			(25ul)
+#define CELL_EMERG_OFF		(26ul)
+#define CELL_STATUS			(27ul)
+#define CELL_PWR_IND		(28ul)
+#define CELL_WAKEUP			(29ul)
+#define CELL_RING			(30ul)
+
 // Other pins
-#define PIN_ATN              (38ul)
+#define PIN_SDI12			(34ul)
+#define PIN_CS_SD			(35ul)
+#define PIN_XBEE_RST		(36ul)
+#define PIN_RS485_DIR		(37ul)
+#define PIN_DUMMY			(47ul)
+#define PIN_ATN				(47ul)
 static const uint8_t ATN = PIN_ATN;
 
 /*
  * Serial interfaces
  */
-// Serial (EDBG)
-#define PIN_SERIAL_RX       (31ul)
-#define PIN_SERIAL_TX       (30ul)
-#define PAD_SERIAL_TX       (UART_TX_PAD_2)
-#define PAD_SERIAL_RX       (SERCOM_RX_PAD_3)
+// Serial 
+// Note that RX & TX are reversed due to a board issue
+#define PIN_SERIAL_RX       (1ul)
+#define PIN_SERIAL_TX       (0ul)
+#define PAD_SERIAL_TX       (UART_TX_PAD_0)
+#define PAD_SERIAL_RX       (SERCOM_RX_PAD_1)
 
-// Serial1
-#define PIN_SERIAL1_RX       (0ul)
-#define PIN_SERIAL1_TX       (1ul)
-#define PAD_SERIAL1_TX       (UART_TX_PAD_2)
-#define PAD_SERIAL1_RX       (SERCOM_RX_PAD_3)
+// Serial1 (Gemalto)
+// Not quite sure how to configured this so RTS & CTS work yet
+#define PIN_SERIAL1_RX       (21ul)
+#define PIN_SERIAL1_TX       (20ul)
+#define PAD_SERIAL1_TX       (UART_TX_PAD_0)
+#define PAD_SERIAL1_RX       (SERCOM_RX_PAD_1)
+
+// Serial2 (RS485)
+#define PIN_SERIAL2_RX       (39ul)
+#define PIN_SERIAL2_TX       (38ul)
+#define PAD_SERIAL2_TX       (UART_TX_PAD_0)
+#define PAD_SERIAL2_RX       (SERCOM_RX_PAD_1)
 
 /*
  * SPI Interfaces
  */
 #define SPI_INTERFACES_COUNT 1
 
-#define PIN_SPI_MISO         (22u)
-#define PIN_SPI_MOSI         (23u)
-#define PIN_SPI_SCK          (24u)
-#define PERIPH_SPI           sercom4
-#define PAD_SPI_TX           SPI_PAD_2_SCK_3
-#define PAD_SPI_RX           SERCOM_RX_PAD_0
+#define PIN_SPI_MOSI         (42u)
+#define PIN_SPI_MISO         (43u)
+#define PIN_SPI_SCK          (44u)
+#define PERIPH_SPI           sercom3
+#define PAD_SPI_TX           (SPI_PAD_2_SCK_3)
+#define PAD_SPI_RX           (SERCOM_RX_PAD_2)
 
-static const uint8_t SS	  = PIN_A2 ;	// SERCOM4 last PAD is present on A2 but HW SS isn't used. Set here only for reference.
+static const uint8_t SS	  = (47ul) ;	// Set to the dummy pin b/c why not?
 static const uint8_t MOSI = PIN_SPI_MOSI ;
 static const uint8_t MISO = PIN_SPI_MISO ;
 static const uint8_t SCK  = PIN_SPI_SCK ;
@@ -143,17 +167,17 @@ static const uint8_t SCK  = PIN_SPI_SCK ;
  */
 #define WIRE_INTERFACES_COUNT 1
 
-#define PIN_WIRE_SDA         (20u)
-#define PIN_WIRE_SCL         (21u)
-#define PERIPH_WIRE          sercom3
-#define WIRE_IT_HANDLER      SERCOM3_Handler
+#define PIN_WIRE_SDA         (40u)
+#define PIN_WIRE_SCL         (41u)
+#define PERIPH_WIRE          sercom2
+#define WIRE_IT_HANDLER      SERCOM2_Handler
 
 /*
  * USB
  */
-#define PIN_USB_HOST_ENABLE (27ul)
-#define PIN_USB_DM          (28ul)
-#define PIN_USB_DP          (29ul)
+#define PIN_USB_HOST_ENABLE (47ul)
+#define PIN_USB_DM          (45ul)
+#define PIN_USB_DP          (46ul)
 
 #ifdef __cplusplus
 }
@@ -178,6 +202,7 @@ extern SERCOM sercom5;
 
 extern Uart Serial;
 extern Uart Serial1;
+extern Uart Serial2;
 
 #endif
 
@@ -197,10 +222,10 @@ extern Uart Serial1;
 // SERIAL_PORT_HARDWARE_OPEN  Hardware serial ports which are open for use.  Their RX & TX
 //                            pins are NOT connected to anything by default.
 #define SERIAL_PORT_USBVIRTUAL      SerialUSB
-#define SERIAL_PORT_MONITOR         Serial
+#define SERIAL_PORT_MONITOR         SerialUSB
 // Serial has no physical pins broken out, so it's not listed as HARDWARE port
-#define SERIAL_PORT_HARDWARE        Serial1
-#define SERIAL_PORT_HARDWARE_OPEN   Serial1
+#define SERIAL_PORT_HARDWARE        Serial
+#define SERIAL_PORT_HARDWARE_OPEN   Serial
 
 #endif /* _VARIANT_ARDUINO_ZERO_ */
 
