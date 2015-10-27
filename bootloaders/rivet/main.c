@@ -36,7 +36,7 @@
  * Supported communication interfaces :
  * --------------------
  *
- * SERCOM5 : RX:PB23 TX:PB22
+ * SERCOM4 : RX:PA13 TX:PA12
  * Baudrate : 115200 8N1
  *
  * USB : D-:PA24 D+:PA25
@@ -46,8 +46,8 @@
  * The following pins are used by the program :
  * PA25 : input/output
  * PA24 : input/output
- * PB23 : input
- * PB22 : output
+ * PA13 : input
+ * PA12 : output
  * PA15 : input
  *
  * The application board shall avoid driving the PA25,PA24,PB23,PB22 and PA15 signals
@@ -56,7 +56,7 @@
  * Clock system
  * --------------------
  * CPU clock source (GCLK_GEN_0) - 8MHz internal oscillator (OSC8M)
- * SERCOM5 core GCLK source (GCLK_ID_SERCOM5_CORE) - GCLK_GEN_0 (i.e., OSC8M)
+ * SERCOM4 core GCLK source (GCLK_ID_SERCOM4_CORE) - GCLK_GEN_0 (i.e., OSC8M)
  * GCLK Generator 1 source (GCLK_GEN_1) - 48MHz DFLL in Clock Recovery mode (DFLL48M)
  * USB GCLK source (GCLK_ID_USB) - GCLK_GEN_1 (i.e., DFLL in CRM mode)
  *

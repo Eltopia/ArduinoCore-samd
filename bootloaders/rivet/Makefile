@@ -1,11 +1,11 @@
-IDE_PATH="../../../../.."
-ARM_GCC_PATH=$(IDE_PATH)/hardware/tools/gcc-arm-none-eabi-4.8.3-2014q1/bin
+IDE_PATH=../../../../../../../AppData/Roaming/Arduino15/packages/arduino
+ARM_GCC_PATH=$(IDE_PATH)/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin
 CC=$(ARM_GCC_PATH)/arm-none-eabi-gcc
 CFLAGS=-mthumb -mcpu=cortex-m0plus -Wall -c -g -Os -w -std=gnu99 -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500
 LDFLAGS=-mthumb -mcpu=cortex-m0plus -Wall -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--warn-unresolved-symbols
-BLD_EXTA_FLAGS=-D__SAMD21G18A__
+BLD_EXTA_FLAGS=-D__SAMD21J18A__
 BUILD_PATH=build
-INCLUDES=-I$(IDE_PATH)/hardware/tools/CMSIS/CMSIS/Include/ -I$(IDE_PATH)/hardware/tools/CMSIS/Device/ATMEL/ -I./drivers/ -I./utils/ -I./utils/preprocessor/ -I./utils/interrupt 
+INCLUDES=-I$(IDE_PATH)/tools/CMSIS/4.0.0-atmel/CMSIS/Include/ -I$(IDE_PATH)/tools/CMSIS/4.0.0-atmel/Device/ATMEL -I./drivers/ -I./utils/ -I./utils/preprocessor/ -I./utils/interrupt 
 SOURCES=main.c sam_ba_monitor.c startup_samd21.c usart_sam_ba.c drivers/cdc_enumerate.c drivers/uart_driver.c utils/interrupt/interrupt_sam_nvic.c 
 OBJECTS=$(addprefix $(BUILD_PATH)/, $(SOURCES:.c=.o))
 
@@ -26,4 +26,4 @@ $(BUILD_PATH)/%.o: %.c
 	$(CC) $(CFLAGS) $(BLD_EXTA_FLAGS) $(INCLUDES) $< -o $@
 	
 clean:
-	del $(EXECUTABLE) $(subst /,\,$(OBJECTS)) $(subst /,\,$(BUILD_PATH)/$(NAME).*)
+	rm $(EXECUTABLE) $(subst /,\,$(OBJECTS)) $(subst /,\,$(BUILD_PATH)/$(NAME).*)

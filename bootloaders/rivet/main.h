@@ -42,7 +42,7 @@
  * If BOOT_LOAD_PIN is defined the bootloader is started if the selected
  * pin is tied LOW.
  */
-//#define BOOT_LOAD_PIN                     PIN_PA21 // Pin 7
+#define BOOT_LOAD_PIN                     PIN_PA21 // Pin 7
 //#define BOOT_LOAD_PIN                     PIN_PA15 // Pin 5
 #define BOOT_PIN_MASK                     (1U << (BOOT_LOAD_PIN & 0x1f))
 
@@ -50,13 +50,13 @@
 #define APP_START_ADDRESS                 0x00002000
 #define FLASH_WAIT_STATES                 1
 
-#define BOOT_USART_MODULE                 SERCOM0
+#define BOOT_USART_MODULE                 SERCOM4
 //#define BOOT_USART_MODULE                 SERCOM5
-#define BOOT_USART_MUX_SETTINGS           UART_RX_PAD3_TX_PAD2
+#define BOOT_USART_MUX_SETTINGS           UART_RX_PAD1_TX_PAD0
 //#define BOOT_USART_PAD3                   PINMUX_PB23D_SERCOM5_PAD3
 //#define BOOT_USART_PAD2                   PINMUX_PB22D_SERCOM5_PAD2
-#define BOOT_USART_PAD3                   PINMUX_PA11C_SERCOM0_PAD3
-#define BOOT_USART_PAD2                   PINMUX_PA10C_SERCOM0_PAD2
-#define BOOT_USART_PAD1                   PINMUX_UNUSED
-#define BOOT_USART_PAD0                   PINMUX_UNUSED
+#define BOOT_USART_PAD3                   PINMUX_UNUSED
+#define BOOT_USART_PAD2                   PINMUX_UNUSED
+#define BOOT_USART_PAD1                   PINMUX_PA13D_SERCOM4_PAD1
+#define BOOT_USART_PAD0                   PINMUX_PA12D_SERCOM4_PAD0
 
