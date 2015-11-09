@@ -38,6 +38,7 @@
 #define GENERIC_CLOCK_GENERATOR_XOSC32K   (1u)
 #define GENERIC_CLOCK_GENERATOR_OSCULP32K (2u) /* Initialized at reset for WDT */
 #define GENERIC_CLOCK_GENERATOR_OSC8M     (3u)
+#define GENERIC_CLOCK_GENERATOR_XOSC	  (1u)
 // Constants for Clock multiplexers
 #define GENERIC_CLOCK_MULTIPLEXER_DFLL48M (0u)
 
@@ -51,12 +52,13 @@ void SystemInit( void )
 
   /* ----------------------------------------------------------------------------------------------
    * 1) Enable XOSC32K clock (External on-board 32.768Hz oscillator)
+   * 1) Enable 
    */
-  SYSCTRL->XOSC32K.reg = SYSCTRL_XOSC32K_STARTUP( 0x6u ) | /* cf table 15.10 of product datasheet in chapter 15.8.6 */
-                         SYSCTRL_XOSC32K_XTALEN | SYSCTRL_XOSC32K_EN32K ;
-  SYSCTRL->XOSC32K.bit.ENABLE = 1 ; /* separate call, as described in chapter 15.6.3 */
+  SYSCTRL->XOSC.reg = SYSCTRL_XOSC_STARTUP( 0xFu ) | 
+						SYSCTRL_XOSC_XTALEN | SYSCTRL_XOSC_AMPGC | 
+						SYSCTRL_XOSC_ENABLE;
 
-  while ( (SYSCTRL->PCLKSR.reg & SYSCTRL_PCLKSR_XOSC32KRDY) == 0 )
+  while ( (SYSCTRL->PCLKSR.reg & SYSCTRL_PCLKSR_XOSCRDY) == 0 )
   {
     /* Wait for oscillator stabilization */
   }
@@ -73,9 +75,9 @@ void SystemInit( void )
   }
 
   /* ----------------------------------------------------------------------------------------------
-   * 2) Put XOSC32K as source of Generic Clock Generator 1
+   * 2) Put XOSC as source of Generic Clock Generator 1
    */
-  GCLK->GENDIV.reg = GCLK_GENDIV_ID( GENERIC_CLOCK_GENERATOR_XOSC32K ) ; // Generic Clock Generator 1
+  GCLK->GENDIV.reg = GCLK_GENDIV_ID( GENERIC_CLOCK_GENERATOR_XOSC ) ; // Generic Clock Generator 1
 
   while ( GCLK->STATUS.reg & GCLK_STATUS_SYNCBUSY )
   {
@@ -83,8 +85,8 @@ void SystemInit( void )
   }
 
   /* Write Generic Clock Generator 1 configuration */
-  GCLK->GENCTRL.reg = GCLK_GENCTRL_ID( GENERIC_CLOCK_GENERATOR_XOSC32K ) | // Generic Clock Generator 1
-                      GCLK_GENCTRL_SRC_XOSC32K | // Selected source is External 32KHz Oscillator
+  GCLK->GENCTRL.reg = GCLK_GENCTRL_ID( GENERIC_CLOCK_GENERATOR_XOSC ) | // Generic Clock Generator 1
+                      GCLK_GENCTRL_SRC_XOSC | // Selected source is External 16MHz Oscillator
 //                      GCLK_GENCTRL_OE | // Output clock to a pin for tests
                       GCLK_GENCTRL_GENEN ;
 

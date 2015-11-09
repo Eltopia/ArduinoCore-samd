@@ -16,15 +16,15 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef _VARIANT_ARDUINO_ZERO_
-#define _VARIANT_ARDUINO_ZERO_
+#ifndef _VARIANT_RIVET_
+#define _VARIANT_RIVET_
 
 /*----------------------------------------------------------------------------
  *        Definitions
  *----------------------------------------------------------------------------*/
 
 /** Frequency of the board main oscillator */
-#define VARIANT_MAINOSC		(32768ul)
+#define VARIANT_MAINOSC		(16000000ul)
 
 /** Master clock frequency */
 #define VARIANT_MCK			  (48000000ul)
