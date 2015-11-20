@@ -1,4 +1,4 @@
-IDE_PATH=../../../../../../../AppData/Roaming/Arduino15/packages/arduino
+IDE_PATH=../../../../../../../AppData/Local/Arduino15/packages/arduino
 ARM_GCC_PATH=$(IDE_PATH)/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin
 CC=$(ARM_GCC_PATH)/arm-none-eabi-gcc
 CFLAGS=-mthumb -mcpu=cortex-m0plus -Wall -c -g -Os -w -std=gnu99 -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500

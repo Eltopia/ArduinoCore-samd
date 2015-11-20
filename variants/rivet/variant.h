@@ -127,23 +127,23 @@ static const uint8_t ATN = PIN_ATN;
  */
 // Serial 
 // Note that RX & TX are reversed due to a board issue
-#define PIN_SERIAL_RX       (1ul)
-#define PIN_SERIAL_TX       (0ul)
-#define PAD_SERIAL_TX       (UART_TX_PAD_0)
-#define PAD_SERIAL_RX       (SERCOM_RX_PAD_1)
-
-// Serial1 (Gemalto)
-// Not quite sure how to configured this so RTS & CTS work yet
-#define PIN_SERIAL1_RX       (21ul)
-#define PIN_SERIAL1_TX       (20ul)
+#define PIN_SERIAL1_RX       (1ul)
+#define PIN_SERIAL1_TX       (0ul)
 #define PAD_SERIAL1_TX       (UART_TX_PAD_0)
 #define PAD_SERIAL1_RX       (SERCOM_RX_PAD_1)
 
-// Serial2 (RS485)
-#define PIN_SERIAL2_RX       (39ul)
-#define PIN_SERIAL2_TX       (38ul)
+// Serial1 (Gemalto)
+// Not quite sure how to configured this so RTS & CTS work yet
+#define PIN_SERIAL2_RX       (21ul)
+#define PIN_SERIAL2_TX       (20ul)
 #define PAD_SERIAL2_TX       (UART_TX_PAD_0)
 #define PAD_SERIAL2_RX       (SERCOM_RX_PAD_1)
+
+// Serial2 (RS485)
+#define PIN_SERIAL3_RX       (39ul)
+#define PIN_SERIAL3_TX       (38ul)
+#define PAD_SERIAL3_TX       (UART_TX_PAD_0)
+#define PAD_SERIAL3_RX       (SERCOM_RX_PAD_1)
 
 /*
  * SPI Interfaces
@@ -200,9 +200,11 @@ extern SERCOM sercom3;
 extern SERCOM sercom4;
 extern SERCOM sercom5;
 
-extern Uart Serial;
+//Serial_ Serial = SerialUSB;
+#define Serial SerialUSB
 extern Uart Serial1;
 extern Uart Serial2;
+extern Uart Serial3;
 
 #endif
 
@@ -222,10 +224,10 @@ extern Uart Serial2;
 // SERIAL_PORT_HARDWARE_OPEN  Hardware serial ports which are open for use.  Their RX & TX
 //                            pins are NOT connected to anything by default.
 #define SERIAL_PORT_USBVIRTUAL      SerialUSB
-#define SERIAL_PORT_MONITOR         SerialUSB
+#define SERIAL_PORT_MONITOR         Serial
 // Serial has no physical pins broken out, so it's not listed as HARDWARE port
-#define SERIAL_PORT_HARDWARE        Serial
-#define SERIAL_PORT_HARDWARE_OPEN   Serial
+#define SERIAL_PORT_HARDWARE        Serial1
+#define SERIAL_PORT_HARDWARE_OPEN   Serial1
 
-#endif /* _VARIANT_ARDUINO_ZERO_ */
+#endif /* _VARIANT_ELTOPIA_RIVET_ */
 
