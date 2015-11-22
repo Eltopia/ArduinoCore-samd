@@ -173,6 +173,7 @@ class SERCOM
 		void enableSPI( void ) ;
 		void disableSPI( void ) ;
 		void setDataOrderSPI(SercomDataOrder dataOrder) ;
+		SercomDataOrder getDataOrderSPI( void ) ;
 		void setBaudrateSPI(uint8_t divider) ;
 		void setClockModeSPI(SercomSpiClockMode clockMode) ;
 		void writeDataSPI(uint8_t data) ;
@@ -191,7 +192,7 @@ class SERCOM
     void disableWIRE( void );
     void prepareNackBitWIRE( void ) ;
     void prepareAckBitWIRE( void ) ;
-    void prepareCommandBitsWire(SercomMasterCommandWire cmd);
+    void prepareCommandBitsWire(uint8_t cmd);
 		bool startTransmissionWIRE(uint8_t address, SercomWireReadWriteFlag flag) ;
 		bool sendDataMasterWIRE(uint8_t data) ;
 		bool sendDataSlaveWIRE(uint8_t data) ;

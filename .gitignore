@@ -1,2 +1,3 @@
 *.bz2
 bootloaders/rivet/build/
+bootloaders/zero/build/
