@@ -54,7 +54,6 @@ void SystemInit( void )
 
   /* ----------------------------------------------------------------------------------------------
    * 1) Enable XOSC32K clock (External on-board 32.768Hz oscillator)
-   * 1) Enable 
    */
   SYSCTRL->XOSC.reg = SYSCTRL_XOSC_STARTUP( 0xFu ) | 
 						SYSCTRL_XOSC_XTALEN | SYSCTRL_XOSC_AMPGC | 

@@ -48,8 +48,9 @@
 #define BOOT_USART_PAD1                   PINMUX_UNUSED
 #define BOOT_USART_PAD0                   PINMUX_UNUSED
 
-/* Frequency of the board main oscillator */
-#define VARIANT_MAINOSC	                  (32768ul)
+
+/** Frequency of the board main oscillator */
+#define VARIANT_MAINOSC						(16000000ul)
 
 /* Master clock frequency */
 #define VARIANT_MCK			                  CPU_FREQUENCY
