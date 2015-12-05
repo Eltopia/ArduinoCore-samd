@@ -1,0 +1,33 @@
+Pin check:
+=========
+0 -- good
+1 -- good
+2 -- reads as pin 4
+3 -- good
+4 -- does not read
+5 -- good
+6 -- good
+7 -- good
+10 -- good
+11 -- good
+12 -- good
+13 -- good
+14 -- good
+15 -- good
+16 -- good
+17 -- good
+18 -- good
+19 -- good
+
+
+34 -- good
+35 -- good
+36 -- good
+37 -- good
+38 -- good
+39 -- good
+40 -- good
+41 -- good
+42 -- good
+43 -- good
+44 -- good
