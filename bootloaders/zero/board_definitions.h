@@ -35,6 +35,7 @@
  */
 //#define BOOT_LOAD_PIN                     PIN_PA21 // Pin 7
 //#define BOOT_LOAD_PIN                     PIN_PA15 // Pin 5
+#define BOOT_LOAD_PIN                     PIN_PA22 // Pin 5
 #define BOOT_PIN_MASK                     (1U << (BOOT_LOAD_PIN & 0x1f))
 
 #define CPU_FREQUENCY                     (48000000ul)
