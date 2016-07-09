@@ -71,6 +71,8 @@ uint8_t TwoWire::requestFrom(uint8_t address, size_t quantity, bool stopBit)
 
   size_t byteRead = 0;
 
+  rxBuffer.clear();
+
   if(sercom->startTransmissionWIRE(address, WIRE_READ_FLAG))
   {
     // Read first data
@@ -85,7 +87,11 @@ uint8_t TwoWire::requestFrom(uint8_t address, size_t quantity, bool stopBit)
     }
     sercom->prepareNackBitWIRE();                           // Prepare NACK to stop slave transmission
     //sercom->readDataWIRE();                               // Clear data register to send NACK
-    sercom->prepareCommandBitsWire(WIRE_MASTER_ACT_STOP);   // Send Stop
+
+    if (stopBit)
+    {
+      sercom->prepareCommandBitsWire(WIRE_MASTER_ACT_STOP);   // Send Stop
+    }
   }
 
   return byteRead;
@@ -131,7 +137,11 @@ uint8_t TwoWire::endTransmission(bool stopBit)
       return 3 ;  // Nack or error
     }
   }
-  sercom->prepareCommandBitsWire(WIRE_MASTER_ACT_STOP);
+  
+  if (stopBit)
+  {
+    sercom->prepareCommandBitsWire(WIRE_MASTER_ACT_STOP);
+  }   
 
   return 0;
 }
@@ -143,27 +153,15 @@ uint8_t TwoWire::endTransmission()
 
 size_t TwoWire::write(uint8_t ucData)
 {
-  if(sercom->isMasterWIRE())
+  // No writing, without begun transmission or a full buffer
+  if ( !transmissionBegun || txBuffer.isFull() )
   {
-    // No writing, without begun transmission or a full buffer
-    if ( !transmissionBegun || txBuffer.isFull() )
-    {
-      return 0 ;
-    }
-
-    txBuffer.store_char( ucData ) ;
-
-    return 1 ;
-  }
-  else
-  {
-    if(sercom->sendDataSlaveWIRE( ucData ))
-    {
-      return 1;
-    }
+    return 0 ;
   }
 
-  return 0;
+  txBuffer.store_char( ucData ) ;
+
+  return 1 ;
 }
 
 size_t TwoWire::write(const uint8_t *data, size_t quantity)
@@ -236,9 +234,9 @@ void TwoWire::onService(void)
 
       if(sercom->isMasterReadOperationWIRE()) //Is a request ?
       {
-        // wait for data ready flag,
-        // before calling request callback
-        while(!sercom->isDataReadyWIRE());
+        txBuffer.clear();
+
+        transmissionBegun = true;
 
         //Calling onRequestCallback, if exists
         if(onRequestCallback)
@@ -247,18 +245,29 @@ void TwoWire::onService(void)
         }
       }
     }
-    else if(sercom->isDataReadyWIRE()) //Received data
+    else if(sercom->isDataReadyWIRE())
     {
-      if (rxBuffer.isFull()) {
-        sercom->prepareNackBitWIRE(); 
-      } else {
-        //Store data
-        rxBuffer.store_char(sercom->readDataWIRE());
+      if (sercom->isMasterReadOperationWIRE())
+      {
+        uint8_t c = 0xff;
 
-        sercom->prepareAckBitWIRE(); 
+        if( txBuffer.available() ) {
+          c = txBuffer.read_char();
+        }
+
+        transmissionBegun = sercom->sendDataSlaveWIRE(c);
+      } else { //Received data
+        if (rxBuffer.isFull()) {
+          sercom->prepareNackBitWIRE(); 
+        } else {
+          //Store data
+          rxBuffer.store_char(sercom->readDataWIRE());
+
+          sercom->prepareAckBitWIRE(); 
+        }
+
+        sercom->prepareCommandBitsWire(0x03);
       }
-
-      sercom->prepareCommandBitsWire(0x03);
     }
   }
 }

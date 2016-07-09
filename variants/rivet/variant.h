@@ -19,8 +19,8 @@
 #ifndef _VARIANT_RIVET_
 #define _VARIANT_RIVET_
 
-// The definitions here needs a SAMD core >=1.6.3
-#define ARDUINO_SAMD_VARIANT_COMPLIANCE 10603
+// The definitions here needs a SAMD core >=1.6.6
+#define ARDUINO_SAMD_VARIANT_COMPLIANCE 10606
 
 /*----------------------------------------------------------------------------
  *        Definitions
@@ -75,9 +75,6 @@ extern "C"
  */
 // #define digitalPinToTimer(P)
 
-// Interrupts
-#define digitalPinToInterrupt(P)   ( g_APinDescription[P].ulExtInt )
-
 // LEDs
 #define PIN_LED_13           (13u)
 #define PIN_LED_RXL          (47u)
@@ -96,13 +93,15 @@ extern "C"
 #define PIN_A3               (17ul)
 #define PIN_A4               (18ul)
 #define PIN_A5               (19ul)
+#define PIN_DAC0             (14ul)
 
-static const uint8_t A0  = PIN_A0 ;
-static const uint8_t A1  = PIN_A1 ;
-static const uint8_t A2  = PIN_A2 ;
-static const uint8_t A3  = PIN_A3 ;
-static const uint8_t A4  = PIN_A4 ;
-static const uint8_t A5  = PIN_A5 ;
+static const uint8_t A0  = PIN_A0;
+static const uint8_t A1  = PIN_A1;
+static const uint8_t A2  = PIN_A2;
+static const uint8_t A3  = PIN_A3;
+static const uint8_t A4  = PIN_A4;
+static const uint8_t A5  = PIN_A5;
+static const uint8_t DAC0 = PIN_DAC0;
 #define ADC_RESOLUTION		12
 
 // Gemalto pins
@@ -174,6 +173,9 @@ static const uint8_t SCK  = PIN_SPI_SCK ;
 #define PIN_WIRE_SCL         (41u)
 #define PERIPH_WIRE          sercom2
 #define WIRE_IT_HANDLER      SERCOM2_Handler
+
+static const uint8_t SDA = PIN_WIRE_SDA;
+static const uint8_t SCL = PIN_WIRE_SCL;
 
 /*
  * USB

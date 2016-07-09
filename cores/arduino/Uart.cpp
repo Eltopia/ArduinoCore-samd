@@ -34,7 +34,7 @@ void Uart::begin(unsigned long baudrate)
   begin(baudrate, (uint8_t)SERIAL_8N1);
 }
 
-void Uart::begin(unsigned long baudrate, uint8_t config)
+void Uart::begin(unsigned long baudrate, uint16_t config)
 {
   pinPeripheral(uc_pinRX, g_APinDescription[uc_pinRX].ulPinType);
   pinPeripheral(uc_pinTX, g_APinDescription[uc_pinTX].ulPinType);
@@ -77,6 +77,11 @@ int Uart::available()
   return rxBuffer.available();
 }
 
+int Uart::availableForWrite()
+{
+  return (sercom->isDataRegisterEmptyUART() ? 1 : 0);
+}
+
 int Uart::peek()
 {
   return rxBuffer.peek();
@@ -93,7 +98,7 @@ size_t Uart::write(const uint8_t data)
   return 1;
 }
 
-SercomNumberStopBit Uart::extractNbStopBit(uint8_t config)
+SercomNumberStopBit Uart::extractNbStopBit(uint16_t config)
 {
   switch(config & HARDSER_STOP_BIT_MASK)
   {
@@ -106,7 +111,7 @@ SercomNumberStopBit Uart::extractNbStopBit(uint8_t config)
   }
 }
 
-SercomUartCharSize Uart::extractCharSize(uint8_t config)
+SercomUartCharSize Uart::extractCharSize(uint16_t config)
 {
   switch(config & HARDSER_DATA_MASK)
   {
@@ -126,7 +131,7 @@ SercomUartCharSize Uart::extractCharSize(uint8_t config)
   }
 }
 
-SercomParityMode Uart::extractParity(uint8_t config)
+SercomParityMode Uart::extractParity(uint16_t config)
 {
   switch(config & HARDSER_PARITY_MASK)
   {

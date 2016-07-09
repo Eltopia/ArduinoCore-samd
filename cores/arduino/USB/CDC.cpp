@@ -58,6 +58,8 @@ static volatile LineInfo _usbLineInfo = {
 	0x00    // lineState
 };
 
+static volatile int32_t breakValue = -1;
+
 static CDCDescriptor _cdcInterface = {
 	D_IAD(0, 2, CDC_COMMUNICATION_INTERFACE_CLASS, CDC_ABSTRACT_CONTROL_MODEL, 0),
 
@@ -134,6 +136,12 @@ bool CDC_Setup(USBSetup& setup)
 			}
 			return false;
 		}
+
+		if (CDC_SEND_BREAK == r)
+		{
+			breakValue = ((uint16_t)setup.wValueH << 8) | setup.wValueL;
+			return false;
+		}
 	}
 	return false;
 }
@@ -158,7 +166,9 @@ void Serial_::accept(void)
 	uint8_t buffer[CDC_SERIAL_BUFFER_SIZE];
 	uint32_t len = usb.recv(CDC_ENDPOINT_OUT, &buffer, CDC_SERIAL_BUFFER_SIZE);
 
-	noInterrupts();
+	uint8_t enableInterrupts = ((__get_PRIMASK() & 0x1) == 0);
+	__disable_irq();
+
 	ring_buffer *ringBuffer = &cdc_rx_buffer;
 	uint32_t i = ringBuffer->head;
 
@@ -175,7 +185,9 @@ void Serial_::accept(void)
 			ringBuffer->full = true;
 	}
 	ringBuffer->head = i;
-	interrupts();
+	if (enableInterrupts) {
+		__enable_irq();
+	}
 }
 
 int Serial_::available(void)
@@ -188,6 +200,13 @@ int Serial_::available(void)
 		USB->DEVICE.DeviceEndpoint[CDC_ENDPOINT_OUT].EPINTENSET.reg = USB_DEVICE_EPINTENCLR_TRCPT(1);
 	}
 	return (uint32_t)(CDC_SERIAL_BUFFER_SIZE + buffer->head - buffer->tail) % CDC_SERIAL_BUFFER_SIZE;
+}
+
+int Serial_::availableForWrite(void)
+{
+	// return the number of bytes left in the current bank,
+	// always EP size - 1, because bank is flushed on every write
+	return (EPX_SIZE - 1);
 }
 
 int Serial_::peek(void)
@@ -250,7 +269,7 @@ size_t Serial_::write(const uint8_t *buffer, size_t size)
 	{
 		uint32_t r = usb.send(CDC_ENDPOINT_IN, buffer, size);
 
-		if (r == 0) {
+		if (r > 0) {
 			return r;
 		} else {
 			setWriteError();
@@ -287,6 +306,50 @@ Serial_::operator bool()
 
 	delay(10);
 	return result;
+}
+
+int32_t Serial_::readBreak() {
+	uint8_t enableInterrupts = ((__get_PRIMASK() & 0x1) == 0);
+
+	// disable interrupts,
+	// to avoid clearing a breakValue that might occur 
+	// while processing the current break value
+	__disable_irq();
+
+	int32_t ret = breakValue;
+
+	breakValue = -1;
+
+	if (enableInterrupts) {
+		// re-enable the interrupts
+		__enable_irq();
+	}
+
+	return ret;
+}
+
+unsigned long Serial_::baud() {
+	return _usbLineInfo.dwDTERate;
+}
+
+uint8_t Serial_::stopbits() {
+	return _usbLineInfo.bCharFormat;
+}
+
+uint8_t Serial_::paritytype() {
+	return _usbLineInfo.bParityType;
+}
+
+uint8_t Serial_::numbits() {
+	return _usbLineInfo.bDataBits;
+}
+
+bool Serial_::dtr() {
+	return _usbLineInfo.lineState & 0x1;
+}
+
+bool Serial_::rts() {
+	return _usbLineInfo.lineState & 0x2;
 }
 
 Serial_ SerialUSB(USBDevice);
